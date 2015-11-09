@@ -47,7 +47,6 @@ abstract class StkAppInstaller {
     }
 
     private static void setAppState(Context context, boolean install) {
-        CatLog.d(LOG_TAG, "[setAppState]+");
         if (context == null) {
             CatLog.d(LOG_TAG, "[setAppState]- no context, just return.");
             return;
@@ -57,25 +56,11 @@ abstract class StkAppInstaller {
             CatLog.d(LOG_TAG, "[setAppState]- no package manager, just return.");
             return;
         }
-        ComponentName cName = new ComponentName("com.android.stk", STK_MAIN_ACTIVITY);
-        int state = install ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-
-        if (((PackageManager.COMPONENT_ENABLED_STATE_ENABLED == state) &&
-                (PackageManager.COMPONENT_ENABLED_STATE_ENABLED ==
-                pm.getComponentEnabledSetting(cName))) ||
-                ((PackageManager.COMPONENT_ENABLED_STATE_DISABLED == state) &&
-                (PackageManager.COMPONENT_ENABLED_STATE_DISABLED ==
-                pm.getComponentEnabledSetting(cName)))) {
-            CatLog.d(LOG_TAG, "Need not change app state!!");
-        } else {
-            CatLog.d(LOG_TAG, "Change app state[" + install + "]");
-            try {
-                pm.setComponentEnabledSetting(cName, state, PackageManager.DONT_KILL_APP);
-            } catch (Exception e) {
-                CatLog.d(LOG_TAG, "Could not change STK app state");
-            }
+        try {
+            ComponentName cName = new ComponentName("com.android.stk", STK_MAIN_ACTIVITY);
+            pm.setComponentEnabledSetting(cName, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+        } catch (Exception e) {
+            CatLog.d(LOG_TAG, "Could not change STK app state");
         }
-        CatLog.d(LOG_TAG, "[setAppState]-");
     }
 }
